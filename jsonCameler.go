@@ -1,6 +1,7 @@
 package jsonCameler
 
 import (
+	"fmt"
 	"go/ast"
 	"strings"
 
@@ -47,7 +48,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 					if len(tag) == 1 {
 						continue
 					}
-					pass.Reportf(fieldName.Pos(), "invalid JSON tag")
+					pass.Reportf(fieldName.Pos(), fmt.Sprintf("invalid JSON tag %s", tag))
 				}
 			}
 		}
