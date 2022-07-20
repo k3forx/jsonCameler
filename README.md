@@ -39,5 +39,5 @@ The result will be like...
 
 ```bash
 go vet -vettool=`which jsonCameler` ./
-./main.go:16:2: invalid JSON tag
+./main.go:16:2: invalid JSON tag last-name
 ```
