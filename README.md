@@ -1,4 +1,4 @@
-# jsonCameler
+# jsonCameler [![Go Report Card](https://goreportcard.com/badge/github.com/k3forx/jsonCameler)](https://goreportcard.com/report/github.com/k3forx/jsonCameler)
 
 `jsonCameler` can be used to check whether JSON tags of structs are written in lowerCamel case.
 
