@@ -51,9 +51,13 @@ func run(pass *analysis.Pass) (interface{}, error) {
 					if len(tag) == 1 && str == "-" {
 						continue
 					}
-					if skip(field.Comment.List) {
-						continue
+
+					if field.Comment != nil {
+						if canIgnore(field.Comment.List) {
+							continue
+						}
 					}
+
 					pass.Reportf(fieldName.Pos(), fmt.Sprintf("invalid JSON tag `%s`", tag))
 				}
 			}
@@ -63,7 +67,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 	return nil, nil
 }
 
-func skip(comments []*ast.Comment) bool {
+func canIgnore(comments []*ast.Comment) bool {
 	if comments == nil {
 		return false
 	}
