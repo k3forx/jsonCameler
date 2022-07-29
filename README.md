@@ -1,6 +1,6 @@
 # jsonCameler [![Go Report Card](https://goreportcard.com/badge/github.com/k3forx/jsonCameler)](https://goreportcard.com/report/github.com/k3forx/jsonCameler)
 
-`jsonCameler` can be used to check whether JSON tags of structs are written in lowerCamel case.
+`jsonCameler` can be used to check whether JSON tags of structs are written in lowerCamel case. You can skip lint check by adding comment `nocaml` to the fields of structs.
 
 ## Installation
 
@@ -27,6 +27,7 @@ type User struct {
 	ID        int       `json:"id"`        // OK
 	FirstName string    `json:"firstName"` // OK
 	LastName  string    `json:"last-name"` // invalid
+	Username  string    `json:"user-name"` // nocamel OK
 	BirthDay  time.Time `json:"-"`         // OK
 }
 
@@ -39,5 +40,5 @@ The result will be like...
 
 ```bash
 go vet -vettool=`which jsonCameler` ./
-./main.go:16:2: invalid JSON tag last-name
+./main.go:16:2: invalid JSON tag `last-name`
 ```
