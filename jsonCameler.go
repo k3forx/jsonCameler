@@ -10,7 +10,10 @@ import (
 	"golang.org/x/tools/go/ast/inspector"
 )
 
-const doc = "jsonCameler is ..."
+const (
+	doc           = "jsonCameler is ..."
+	ignoreComment = "nocamel"
+)
 
 // Analyzer is ...
 var Analyzer = &analysis.Analyzer{
@@ -45,7 +48,10 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 			for _, str := range []string{"_", "-"} {
 				if strings.Contains(tag, str) {
-					if len(tag) == 1 {
+					if len(tag) == 1 && str == "-" {
+						continue
+					}
+					if !canIgnore(field.Comment.List) {
 						continue
 					}
 					pass.Reportf(fieldName.Pos(), fmt.Sprintf("invalid JSON tag %s", tag))
@@ -55,4 +61,13 @@ func run(pass *analysis.Pass) (interface{}, error) {
 	})
 
 	return nil, nil
+}
+
+func canIgnore(comments []*ast.Comment) bool {
+	for _, cm := range comments {
+		if strings.Contains(cm.Text, ignoreComment) {
+			return false
+		}
+	}
+	return true
 }
