@@ -54,7 +54,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 					if !canIgnore(field.Comment.List) {
 						continue
 					}
-					pass.Reportf(fieldName.Pos(), fmt.Sprintf("invalid JSON tag %s", tag))
+					pass.Reportf(fieldName.Pos(), fmt.Sprintf("invalid JSON tag `%s`", tag))
 				}
 			}
 		}
