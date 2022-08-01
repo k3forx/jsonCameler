@@ -40,8 +40,12 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 		for _, field := range st.Fields.List {
 			fieldName := field.Names[0]
-			tag := field.Tag.Value
 
+			if tag := field.Tag; tag == nil {
+				continue
+			}
+
+			tag := field.Tag.Value
 			for _, str := range []string{"`", "\"", "json", ":"} {
 				tag = strings.ReplaceAll(tag, str, "")
 			}
