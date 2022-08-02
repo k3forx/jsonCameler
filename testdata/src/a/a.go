@@ -12,6 +12,11 @@ type User struct {
 }
 
 type UserAddress struct {
-	ID      int
-	Country string `json:"country"`
+	ID        int
+	Country   string    `json:"country"`
+	CreatedAt time.Time `json:"created_at" some tags` // want "invalid JSON tag `created_at`"
+}
+
+type Config struct {
+	APIKey string `env:"API_KEY"`
 }
