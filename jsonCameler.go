@@ -37,18 +37,25 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		if !ok {
 			return
 		}
+		if st.Fields == nil {
+			return
+		}
 
 		for _, field := range st.Fields.List {
-			fieldName := field.Names[0]
+			if field.Names == nil {
+				continue
+			}
 
-			if tag := field.Tag; tag == nil {
+			fieldName := field.Names[0]
+			if !hasTags(field) {
 				continue
 			}
 
 			tag := field.Tag.Value
-			for _, str := range []string{"`", "\"", "json", ":"} {
-				tag = strings.ReplaceAll(tag, str, "")
+			if !isJSONTag(tag) {
+				continue
 			}
+			tag = filterJSONTag(tag)
 
 			for _, str := range []string{"_", "-"} {
 				if strings.Contains(tag, str) {
@@ -81,4 +88,32 @@ func canIgnore(comments []*ast.Comment) bool {
 		}
 	}
 	return false
+}
+
+func hasTags(field *ast.Field) bool {
+	if field == nil {
+		return false
+	}
+	if field.Tag == nil {
+		return false
+	}
+	return true
+}
+
+func isJSONTag(str string) bool {
+	return strings.Contains(str, "json")
+}
+
+func filterJSONTag(tag string) string {
+	var jsonTag string
+	for _, t := range strings.Split(tag, " ") {
+		if strings.Contains(t, "json") {
+			jsonTag = t
+		}
+	}
+
+	for _, str := range []string{"`", "\"", "json", ":"} {
+		jsonTag = strings.ReplaceAll(jsonTag, str, "")
+	}
+	return jsonTag
 }
