@@ -112,7 +112,7 @@ func filterJSONTag(tag string) string {
 		}
 	}
 
-	for _, str := range []string{"`", "\"", "json", ":"} {
+	for _, str := range []string{"`", "\"", "json", ":", ",", "omitempty"} {
 		jsonTag = strings.ReplaceAll(jsonTag, str, "")
 	}
 	return jsonTag
