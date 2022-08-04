@@ -3,8 +3,11 @@ package jsonCameler
 import (
 	"fmt"
 	"go/ast"
+	"go/token"
 	"strings"
 
+	"github.com/gostaticanalysis/comment"
+	"github.com/gostaticanalysis/comment/passes/commentmap"
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
@@ -22,11 +25,14 @@ var Analyzer = &analysis.Analyzer{
 	Run:  run,
 	Requires: []*analysis.Analyzer{
 		inspect.Analyzer,
+		commentmap.Analyzer,
 	},
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
+	cmaps := pass.ResultOf[commentmap.Analyzer].(comment.Maps)
+	ignoreCommentPos := recordIgnoreCommentsPos(cmaps)
 
 	nodeFilter := []ast.Node{
 		(*ast.StructType)(nil),
@@ -39,6 +45,13 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		}
 		if st.Fields == nil {
 			return
+		}
+
+		for _, p := range ignoreCommentPos {
+			pLine := pass.Fset.Position(p).Line
+			if pLine+1 == pass.Fset.Position(st.Pos()).Line {
+				return
+			}
 		}
 
 		for _, field := range st.Fields.List {
@@ -116,4 +129,29 @@ func filterJSONTag(tag string) string {
 		jsonTag = strings.ReplaceAll(jsonTag, str, "")
 	}
 	return jsonTag
+}
+
+func recordIgnoreCommentsPos(cmaps []ast.CommentMap) []token.Pos {
+	var res []token.Pos
+	if len(cmaps) == 0 {
+		return res
+	}
+
+	for _, cmap := range cmaps {
+		for n, cg := range cmap {
+			if _, ok := n.(*ast.GenDecl); !ok {
+				continue
+			}
+			if cg == nil {
+				continue
+			}
+			for _, cm := range cg {
+				if cm.Text() == fmt.Sprintf("%s\n", ignoreComment) {
+					res = append(res, cm.Pos())
+				}
+			}
+		}
+	}
+
+	return res
 }
