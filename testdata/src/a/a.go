@@ -15,6 +15,7 @@ type UserAddress struct {
 	ID        int
 	Country   string    `json:"country"`
 	CreatedAt time.Time `json:"created_at" some tags` // want "invalid JSON tag `created_at`"
+	UpdatedAt time.Time `json:"updated_at,omitempty"` // want "invalid JSON tag `updated_at`"
 }
 
 type Config struct {
