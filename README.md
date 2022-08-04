@@ -1,6 +1,6 @@
 # jsonCameler [![Go Report Card](https://goreportcard.com/badge/github.com/k3forx/jsonCameler)](https://goreportcard.com/report/github.com/k3forx/jsonCameler)
 
-`jsonCameler` can be used to check whether JSON tags of structs are written in lowerCamel case. You can skip lint check by adding comment `nocaml` to the fields of structs.
+`jsonCameler` can be used to check whether JSON tags of structs are written in lowerCamel case. You can skip lint check by adding comment `nocaml` to the fields of the struct or to the above line of the declaration of the struct.
 
 ## Installation
 
@@ -24,11 +24,20 @@ import (
 )
 
 type User struct {
-	ID        int       `json:"id"`        // OK
-	FirstName string    `json:"firstName"` // OK
+	ID        int       `json:"id"`        
+	FirstName string    `json:"firstName"` 
 	LastName  string    `json:"last-name"` // invalid
-	Username  string    `json:"user-name"` // nocamel OK
-	BirthDay  time.Time `json:"-"`         // OK
+	Username  string    `json:"user-name"` // nocamel
+	BirthDay  time.Time `json:"-"`         
+}
+
+// nocamel
+type Score struct {
+	ID        int
+	UserID    int       `json:"user_id"`
+	Score     int       `json:"s-co-re"`
+	CreatedAt time.Time `json:"created_at" some tags`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 func main() {
