@@ -21,3 +21,12 @@ type UserAddress struct {
 type Config struct {
 	APIKey string `env:"API_KEY"`
 }
+
+// nocamel
+type Score struct {
+	ID        int
+	UserID    int       `json:"user_id"`
+	Score     int       `json:"s-co-re"`
+	CreatedAt time.Time `json:"created_at" some tags`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+}
