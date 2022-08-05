@@ -24,11 +24,11 @@ import (
 )
 
 type User struct {
-	ID        int       `json:"id"`        
-	FirstName string    `json:"firstName"` 
+	ID        int       `json:"id"`
+	FirstName string    `json:"firstName"`
 	LastName  string    `json:"last-name"` // invalid
 	Username  string    `json:"user-name"` // nocamel
-	BirthDay  time.Time `json:"-"`         
+	BirthDay  time.Time `json:"-"`
 }
 
 // nocamel
@@ -50,4 +50,10 @@ The result will be like...
 ```bash
 go vet -vettool=`which jsonCameler` ./
 ./main.go:16:2: invalid JSON tag `last-name`
+```
+
+## Plugin
+
+```bash
+go build -buildmode=plugin -o . ./plugin/jsonCameler.go
 ```
